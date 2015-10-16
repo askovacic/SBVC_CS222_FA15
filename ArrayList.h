@@ -2,6 +2,7 @@
 #include "AbstractList.h"
 #include <stdexcept>
 
+
 template <typename T> class ArrayList : AbstractList<T>
 {
 private:
@@ -38,7 +39,7 @@ public:
 		}
 		else
 		{
-			throw std::range_error("List capacity has been reached.");
+			throw std::length_error("List capacity has been reached.");
 		}
 		
 	}
@@ -46,13 +47,21 @@ public:
 	// Remove the element at the current position and return it.
 	virtual T remove()
 	{
-		T removedElement = listArray[currentPosition];
-		for (int i = currentPosition; i < currentSize; i++)
+		if (currentSize > 0)
 		{
-			listArray[i] = listArray[i + 1];
+			T removedElement = listArray[currentPosition];
+			for (int i = currentPosition; i < currentSize; i++)
+			{
+				listArray[i] = listArray[i + 1];
+			}
+			currentSize--;
+			return removedElement;
 		}
-		currentSize--;
-		return removedElement;
+		else
+		{
+			throw std::out_of_range("List is empty.");
+		}
+		
 	}
 
 	// Add an element to the end of the list.
@@ -62,6 +71,10 @@ public:
 		{
 			listArray[currentSize] = element;
 			currentSize++;
+		}
+		else
+		{
+			throw std::length_error("List is full.");
 		}
 	}
 
@@ -83,19 +96,19 @@ public:
 	// Move to the end of the list.
 	virtual void moveToEnd()
 	{
-		currentPosition = currentSize;
+		currentPosition = currentSize -1;
 	}
 
 	// Move to the next element.
 	virtual void next()
 	{
-		if (currentPosition < currentSize)
+		if (currentPosition < currentSize - 1 )
 		{
 			currentPosition++;
 		}	
 		else
 		{
-			throw new std::range_error("No further elements exist.");
+			throw std::range_error("No further elements exist.");
 		}
 	}
 
@@ -108,7 +121,7 @@ public:
 		}
 		else
 		{
-			throw new std::range_error("Cannot preceed beginning of list.");
+			throw std::range_error("Cannot preceed beginning of list.");
 		}
 		
 	}
@@ -122,9 +135,9 @@ public:
 	// Move to the position designated by the position parameter.
 	virtual void moveToPosition(int position)
 	{
-		if (position < 0 || position >= maxSize)
+		if (position < 0 || position >= currentSize)
 		{
-			throw new std::range_error("No such list element.");
+			throw std::range_error("No such list element.");
 		}
 		else
 		{
@@ -135,11 +148,18 @@ public:
 	// Return the element currently pointed to without removing it.
 	virtual const T& getElement() const
 	{
-		return listArray[currentPosition];
+		if (currentPosition >= 0 && currentPosition < currentSize)
+		{
+			return listArray[currentPosition];
+		}
+		else
+		{
+			throw std::out_of_range("No element at this position.");
+		}
 	}
 
 	// Return the current number of elements in the list.
-	virtual int length()
+	virtual int length() const
 	{
 		return currentSize;
 	}
