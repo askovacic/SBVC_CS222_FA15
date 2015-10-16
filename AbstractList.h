@@ -39,7 +39,7 @@ public:
 	virtual const T& getElement() const = 0;
 
 	// Return the current number of elements in the list.
-	virtual int length() = 0;
+	virtual int length() const = 0;
 private:
 
 };
